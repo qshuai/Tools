@@ -1,5 +1,7 @@
 ## ssh-list return ssh-server alias list accompanied by ip
 
+## Usage:
+
 1. define ssh-server alias(~/.ssh/config)
 
 	```
@@ -36,7 +38,7 @@
 	
 	> get help `ssh-list -h`
 
+## LIke this:
 
-
-
+![snapshoot](img/snapshoot.png)
 

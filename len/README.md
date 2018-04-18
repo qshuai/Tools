@@ -1,6 +1,10 @@
-this program will calculate the length of input string.
+## this program will calculate the length of input string.
 you can build a executable file and move it to your path.
 
-usage: `go build -o len main.go`
+### Usage: 
 
-commandline: `len input your string`
+```
+go get github.com/qshuai/commandlineTool/len
+```
+
+

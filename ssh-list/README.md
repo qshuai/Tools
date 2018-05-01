@@ -2,6 +2,13 @@
 
 ## Usage:
 
+Configure profile to support this feature[recommended]. Add following to your profile:
+```apple js
+alias sshlist="sed -n 'p' /Users/\$USER/.ssh/config | awk '{if(\$1==\"HOST\") printf(\"\033[0;32m%-12s\",\$2)}{if(\$1==\"HostName\")printf(\"%s\n\", \$2)}'"
+```
+
+If you have do above, omit following.
+
 1. define ssh-server alias(~/.ssh/config)
 
 	```

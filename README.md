@@ -2,5 +2,6 @@
 
 ### Tools List:
 
-- [len](https://github.com/qshuai/commandlineTool/tree/master/len): obtain the length of your input string
-- [ssh-list](https://github.com/qshuai/commandlineTool/tree/master/ssh-list): obtain your ssh server alias and ip
+- [len](https://github.com/qshuai/commandlineTool/tree/master/len): Obtain the length of your input string
+- [ssh-list](https://github.com/qshuai/commandlineTool/tree/master/ssh-list): Obtain your ssh server alias and ip
+- [btc-gurad](https://github.com/qshuai/commandlineTool/tree/master/btc-guard): Guarantee your bitcoind process is always available

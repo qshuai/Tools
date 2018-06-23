@@ -1,4 +1,4 @@
-package btc_guard
+package main
 
 import (
 	"io/ioutil"

@@ -19,7 +19,7 @@
 3. install this tool:
 
     ```
-    cd Toos/cov
+    cd Tools/cov
     go install
     ```
 
@@ -31,6 +31,7 @@
 
     cov qqm2p7aglxw3dn7zzrdwmhd8lm2veypvlqu4yc6dtv testnet
     // output: mkVodiCHZ9AkZJLjSxYMvtweiYKr1wYP1w
+
     cov mfhy8vnokuzwygtBVEzPZxDDQj6bJJS45W regtest
     // output: bchreg:qqpp23mvg0aw5xt8lvql77yz9uuepyeqvsvcg2zqgv
     ```

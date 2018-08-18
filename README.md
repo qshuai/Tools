@@ -1,4 +1,4 @@
-## Build many command line tools to let your work relay
+## Build many command line tools to let your work relaxed
 
 ### Tools List:
 

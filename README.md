@@ -7,4 +7,4 @@
 - [btc-gurad](https://github.com/qshuai/commandlineTool/tree/master/btc-guard): Guarantee your bitcoind process is always available
 - [cov](https://github.com/qshuai/Tools/tree/master/cov): Convert bitcoin cash address format each other
 - [rstr](https://github.com/qshuai/Tools/tree/master/rstr): Generate a random string(supporting the specified lenght)
-
+- [convhex](https://github.com/qshuai/Tools/tree/master/convhex): Convert the hexadecimal sequence according to byte

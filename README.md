@@ -9,3 +9,4 @@
 - [rstr](https://github.com/qshuai/Tools/tree/master/rstr): Generate a random string(supporting the specified lenght)
 - [convhex](https://github.com/qshuai/Tools/tree/master/convhex): Convert the hexadecimal sequence according to byte
 - [baddr](https://github.com/qshuai/Tools/tree/master/baddr): Generate bitcoin or bitcoin cash address for the specified network
+- [calcFee](https://github.com/qshuai/Tools/tree/master/calcFee): Calculate fee and feerate for the specified hexadecimal transaction string

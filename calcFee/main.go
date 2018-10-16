@@ -81,11 +81,11 @@ func main() {
 	fee := inputValue - outputValue
 	txSize := len(*rawtx) / 2
 	feeRateWithSatoshi := decimal.New(fee, 0).Div(decimal.New(int64(txSize), 0)).IntPart()
-	feeRateWithBCH, _ := decimal.New(fee, 0).Div(decimal.New(int64(txSize), 0)).Mul(decimal.New(1, -5)).Truncate(8).Float64()
+	feeRateWithBCH := decimal.New(fee, 0).Div(decimal.New(int64(txSize), 0)).Mul(decimal.New(1, -5)).Truncate(8).String()
 
 	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("fee    : %s", decimal.New(fee, 0).Mul(decimal.New(1, -8)).Truncate(8).String())))
 	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %d Satoshi/Byte", feeRateWithSatoshi)))
-	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %f BCH/KB", feeRateWithBCH)))
+	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %s BCH/KB", feeRateWithBCH)))
 }
 
 func getInputValue(hash string, vout uint32) (int64, bool, error) {

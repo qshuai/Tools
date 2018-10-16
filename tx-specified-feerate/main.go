@@ -11,6 +11,8 @@ import (
 	"os"
 	"strconv"
 
+	"decimal"
+
 	"github.com/bcext/cashutil"
 	"github.com/bcext/gcash/chaincfg"
 	"github.com/bcext/gcash/chaincfg/chainhash"
@@ -68,11 +70,31 @@ func main() {
 		os.Exit(1)
 	}
 
-	tx, err := assembleTx(list[targetIdx], address, wif, *feerate)
+	inputValue, tx, err := assembleTx(list[targetIdx], address, wif, *feerate)
 	if err != nil {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "Assemble transaction or sign error:"+err.Error()))
 		os.Exit(1)
 	}
+
+	var positive, negative bool
+again:
+	realFeeRate := calcFeeRate(tx.SerializeSize(), inputValue, tx.TxOut[0].Value)
+	if realFeeRate < *feerate {
+		tx.TxOut[0].Value--
+		if positive {
+			goto next
+		}
+		negative = true
+		goto again
+	} else {
+		tx.TxOut[0].Value++
+		if negative {
+			goto next
+		}
+		positive = true
+		goto again
+	}
+next:
 
 	buf := bytes.NewBuffer(nil)
 	err = tx.Serialize(buf)
@@ -108,7 +130,7 @@ func getUnspent(addr string, page int) (string, error) {
 	return string(content), nil
 }
 
-func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, feerate float64) (*wire.MsgTx, error) {
+func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, feerate float64) (int64, *wire.MsgTx, error) {
 	var tx wire.MsgTx
 	tx.Version = 1
 	tx.LockTime = 0
@@ -119,18 +141,24 @@ func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, 
 
 	hash, err := chainhash.NewHashFromStr(utxo.Get("tx_hash").String())
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 
 	outpoint := wire.NewOutPoint(hash, uint32(utxo.Get("tx_output_n").Int()))
 	tx.TxIn = append(tx.TxIn, wire.NewTxIn(outpoint, nil))
 	tx.TxIn[0].Sequence = defaultSequence
 
-	outValue := utxo.Get("value").Int() - int64(feerate*1e5*float64(tx.SerializeSize()+defaultSignatureSize))
+	inputTotal := utxo.Get("value").Int()
+	txsize := tx.SerializeSize() + defaultSignatureSize
+
+	fee := decimal.NewFromFloat(feerate * 1e5).Mul(decimal.New(int64(txsize), 0)).Truncate(0).IntPart()
+
+	outValue := inputTotal - fee
 	tx.TxOut[0].Value = outValue
 
 	// sign the transaction
-	return sign(&tx, []int64{utxo.Get("value").Int()}, pkScript, wif)
+	rawtx, err := sign(&tx, []int64{utxo.Get("value").Int()}, pkScript, wif)
+	return inputTotal, rawtx, err
 }
 
 func sign(tx *wire.MsgTx, inputValueSlice []int64, pkScript []byte, wif *cashutil.WIF) (*wire.MsgTx, error) {
@@ -165,4 +193,10 @@ func sign(tx *wire.MsgTx, inputValueSlice []int64, pkScript []byte, wif *cashuti
 	}
 
 	return tx, nil
+}
+
+func calcFeeRate(txsize int, inputValue, outputValue int64) float64 {
+	fee := inputValue - outputValue
+	feeRate, _ := decimal.New(fee, 0).Div(decimal.New(int64(txsize), 0)).Mul(decimal.New(1, -5)).Truncate(8).Float64()
+	return feeRate
 }

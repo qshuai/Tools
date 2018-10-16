@@ -9,7 +9,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bcext/cashutil"
+	"decimal"
+
 	"github.com/bcext/gcash/wire"
 	"github.com/pkg/errors"
 	"github.com/qshuai/tcolor"
@@ -40,6 +41,8 @@ func main() {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "transaction deserialize failed"))
 		return
 	}
+
+	tx.TxHash()
 
 	// calculate fee
 	var inputValue, outputValue int64
@@ -75,12 +78,14 @@ func main() {
 		return
 	}
 
-	fee := cashutil.Amount(inputValue - outputValue).ToBCH()
+	fee := inputValue - outputValue
 	txSize := len(*rawtx) / 2
-	feeRate := fee / float64(txSize) * 1000
+	feeRateWithSatoshi := decimal.New(fee, 0).Div(decimal.New(int64(txSize), 0)).IntPart()
+	feeRateWithBCH := decimal.New(fee, 0).Div(decimal.New(int64(txSize), 0)).Mul(decimal.New(1, -5)).Truncate(8).String()
 
-	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("fee    : %f", fee)))
-	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %f", feeRate)))
+	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("fee    : %s", decimal.New(fee, 0).Mul(decimal.New(1, -8)).Truncate(8).String())))
+	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %d Satoshi/Byte", feeRateWithSatoshi)))
+	fmt.Println(tcolor.WithColor(tcolor.Green, fmt.Sprintf("feeRate: %s BCH/KB", feeRateWithBCH)))
 }
 
 func getInputValue(hash string, vout uint32) (int64, bool, error) {

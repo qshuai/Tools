@@ -11,14 +11,13 @@ import (
 	"os"
 	"strconv"
 
-	"decimal"
-
 	"github.com/bcext/cashutil"
 	"github.com/bcext/gcash/chaincfg"
 	"github.com/bcext/gcash/chaincfg/chainhash"
 	"github.com/bcext/gcash/txscript"
 	"github.com/bcext/gcash/wire"
 	"github.com/qshuai/tcolor"
+	"github.com/shopspring/decimal"
 	"github.com/tidwall/gjson"
 )
 

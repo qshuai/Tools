@@ -70,31 +70,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	inputValue, tx, err := assembleTx(list[targetIdx], address, wif, *feerate)
+	tx, err := assembleTx(list[targetIdx], address, wif, *feerate)
 	if err != nil {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "Assemble transaction or sign error:"+err.Error()))
 		os.Exit(1)
 	}
-
-	var positive, negative bool
-again:
-	realFeeRate := calcFeeRate(tx.SerializeSize(), inputValue, tx.TxOut[0].Value)
-	if realFeeRate < *feerate {
-		tx.TxOut[0].Value--
-		if positive {
-			goto next
-		}
-		negative = true
-		goto again
-	} else {
-		tx.TxOut[0].Value++
-		if negative {
-			goto next
-		}
-		positive = true
-		goto again
-	}
-next:
 
 	buf := bytes.NewBuffer(nil)
 	err = tx.Serialize(buf)
@@ -130,7 +110,7 @@ func getUnspent(addr string, page int) (string, error) {
 	return string(content), nil
 }
 
-func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, feerate float64) (int64, *wire.MsgTx, error) {
+func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, feerate float64) (*wire.MsgTx, error) {
 	var tx wire.MsgTx
 	tx.Version = 1
 	tx.LockTime = 0
@@ -141,7 +121,7 @@ func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, 
 
 	hash, err := chainhash.NewHashFromStr(utxo.Get("tx_hash").String())
 	if err != nil {
-		return 0, nil, err
+		return nil, err
 	}
 
 	outpoint := wire.NewOutPoint(hash, uint32(utxo.Get("tx_output_n").Int()))
@@ -157,8 +137,7 @@ func assembleTx(utxo gjson.Result, address cashutil.Address, wif *cashutil.WIF, 
 	tx.TxOut[0].Value = outValue
 
 	// sign the transaction
-	rawtx, err := sign(&tx, []int64{utxo.Get("value").Int()}, pkScript, wif)
-	return inputTotal, rawtx, err
+	return sign(&tx, []int64{utxo.Get("value").Int()}, pkScript, wif)
 }
 
 func sign(tx *wire.MsgTx, inputValueSlice []int64, pkScript []byte, wif *cashutil.WIF) (*wire.MsgTx, error) {
@@ -198,5 +177,6 @@ func sign(tx *wire.MsgTx, inputValueSlice []int64, pkScript []byte, wif *cashuti
 func calcFeeRate(txsize int, inputValue, outputValue int64) float64 {
 	fee := inputValue - outputValue
 	feeRate, _ := decimal.New(fee, 0).Div(decimal.New(int64(txsize), 0)).Mul(decimal.New(1, -5)).Truncate(8).Float64()
+	fmt.Println(feeRate)
 	return feeRate
 }

@@ -1,40 +1,44 @@
 package main
 
 import (
-	"encoding/hex"
+	"encoding/base64"
+	"flag"
 	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
-	"strings"
 	"time"
+
+	"github.com/bcext/cashutil/base58"
+	"github.com/qshuai/tcolor"
+)
+
+type encodeType string
+
+const (
+	base58Encoding encodeType = "base58"
+	base64Encoding encodeType = "base64"
+
+	bytesLengthLimit   = 500
+	defaultBytesLength = 60
 )
 
 func main() {
+	length := flag.Int("length", defaultBytesLength, "Please input the needed length of the generated random string (base58 encoded string length is not precision)")
+	encode := flag.String("encode", string(base64Encoding), "Please input encode type (base64 encoded string with character `+/=`)")
+	flag.Parse()
+
 	rand.Seed(time.Now().UnixNano())
-
-	args := os.Args
-	var length uint32
-	if len(args) < 2 {
-		length = rand.Uint32() % 64
-
-		if length < 4 {
-			length += 4
-		}
-	} else {
-		ret, err := strconv.Atoi(args[1])
-		if err != nil {
-			panic("Please check the input number!")
-		}
-
-		if ret <= 0 || ret > 520 {
-			panic("Input number should larger than 0 and less than 520")
-		}
-
-		length = uint32(ret)
+	if *length > bytesLengthLimit {
+		fmt.Println(tcolor.WithColor(tcolor.Yellow, "the input length too big. use default length: "+strconv.Itoa(defaultBytesLength)))
+		*length = defaultBytesLength
 	}
 
-	data := make([]byte, length/2)
+	data := make([]byte, int(*length*3)/4)
 	rand.Read(data)
-	fmt.Println(strings.ToUpper(hex.EncodeToString(data)))
+	if *encode == string(base58Encoding) {
+		fmt.Println(tcolor.WithColor(tcolor.Green, base58.Encode(data)))
+		return
+	}
+
+	fmt.Println(tcolor.WithColor(tcolor.Green, base64.StdEncoding.EncodeToString(data)))
 }

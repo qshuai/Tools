@@ -24,7 +24,7 @@ const (
 
 func main() {
 	length := flag.Int("length", defaultBytesLength, "Please input the needed length of the generated random string (base58 encoded string length is not precision)")
-	encode := flag.String("encode", string(base64Encoding), "Please input encode type (base64 encoded string with character `+/=`)")
+	encode := flag.String("encode", string(base64Encoding), "Please input encode type (base64 encoded string with character '+/=')")
 	flag.Parse()
 
 	rand.Seed(time.Now().UnixNano())

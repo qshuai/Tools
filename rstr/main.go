@@ -1,12 +1,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"math/rand"
 	"strconv"
-	"time"
 
 	"github.com/bcext/cashutil/base58"
 	"github.com/qshuai/tcolor"
@@ -27,7 +26,6 @@ func main() {
 	encode := flag.String("encode", string(base64Encoding), "Please input encode type (base64 encoded string with character '+/=')")
 	flag.Parse()
 
-	rand.Seed(time.Now().UnixNano())
 	if *length > bytesLengthLimit {
 		fmt.Println(tcolor.WithColor(tcolor.Yellow, "the input length too big. use default length: "+strconv.Itoa(defaultBytesLength)))
 		*length = defaultBytesLength

@@ -63,12 +63,7 @@ func main() {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "incorrect feerate: "+err.Error()))
 		os.Exit(1)
 	}
-	fee, _ := feerateDecimal.Truncate(8).Float64()
-	if err != nil {
-		fmt.Println(tcolor.WithColor(tcolor.Red, "incorrect feerate: "+err.Error()))
-		os.Exit(1)
-	}
-	tx, err := assembleTx(h, int64(*value), uint32(*idx), sender, dst, wif, fee)
+	tx, err := assembleTx(h, int64(*value), uint32(*idx), sender, dst, wif, feerateDecimal)
 	if err != nil {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "assemble transaction failed: "+err.Error()))
 		os.Exit(1)
@@ -84,7 +79,7 @@ func main() {
 	fmt.Println(tcolor.WithColor(tcolor.Green, hex.EncodeToString(buf.Bytes())))
 }
 
-func assembleTx(hash *chainhash.Hash, value int64, idx uint32, sender, receiver cashutil.Address, wif *cashutil.WIF, feerate float64) (*wire.MsgTx, error) {
+func assembleTx(hash *chainhash.Hash, value int64, idx uint32, sender, receiver cashutil.Address, wif *cashutil.WIF, feerate decimal.Decimal) (*wire.MsgTx, error) {
 	var tx wire.MsgTx
 	tx.Version = 1
 	tx.LockTime = 0
@@ -102,7 +97,7 @@ func assembleTx(hash *chainhash.Hash, value int64, idx uint32, sender, receiver 
 
 	txsize := tx.SerializeSize() + defaultSignatureSize
 
-	fee := decimal.NewFromFloat(feerate * 1e5).Mul(decimal.New(int64(txsize), 0)).Truncate(0).IntPart()
+	fee := feerate.Mul(decimal.New(int64(txsize*1e5), 0)).Truncate(0).IntPart()
 	outValue := value - fee
 	tx.TxOut[0].Value = outValue
 
@@ -125,6 +120,7 @@ func sign(tx *wire.MsgTx, inputValueSlice []int64, pkScript []byte, wif *cashuti
 		if err != nil {
 			return nil, err
 		}
+
 		pk, err := txscript.NewScriptBuilder().AddData(wif.PrivKey.PubKey().SerializeCompressed()).Script()
 		if err != nil {
 			return nil, err

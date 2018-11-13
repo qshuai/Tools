@@ -13,8 +13,8 @@ import (
 
 func main() {
 	tx := flag.String("tx", "", "Please input a transaction with hexadecimal decoded")
-	in := flag.Bool("input", false, "Whether fetch the specified transaction input")
-	out := flag.Bool("output", false, "Whether fetch the specified transaction output")
+	in := flag.Bool("input", false, "Whether fetch the specified transaction input or not(default false)")
+	out := flag.Bool("output", false, "Whether fetch the specified transaction output or not(default false)")
 	num := flag.Int("num", 0, "The specified item with offset(based 0)")
 	flag.Parse()
 

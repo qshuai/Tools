@@ -26,14 +26,14 @@ func main() {
 	chain := flag.String("chainparam", "testnet", "blockchain parameter")
 	host := flag.String("rpchost", "127.0.0.1:18332", "host for rpc server[ip:port]")
 	user := flag.String("rpcuser", "", "rpc username for rpc server auth")
-	passwd := flag.String("passwd", "", "rpc password for rpc server auth")
+	passwd := flag.String("rpcpasswd", "", "rpc password for rpc server auth")
 
 	address := flag.String("address", "", "bitcoin address for receiver")
 	amount := flag.Float64("amount", 0.1, "amount sending for each transaction[in bitcoin]")
 	count := flag.Int("count", 50, "create how many transactions")
 	flag.Parse()
 
-	if *user == "" || *passwd == "", *address == "" {
+	if *user == "" || *passwd == "" || *address == "" {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "empty user, password and address not allowd"))
 		os.Exit(1)
 	}

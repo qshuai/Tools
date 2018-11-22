@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 
@@ -50,6 +51,7 @@ func main() {
 	}
 
 	fmt.Println("privkey key:           ", tcolor.WithColor(tcolor.Green, wif.String()))
+	fmt.Println("public key:            ", tcolor.WithColor(tcolor.Green, hex.EncodeToString(pubKey.SerializeCompressed())))
 	fmt.Println("base58 encoded address:", tcolor.WithColor(tcolor.Green, addr.EncodeAddress(false)))
 	fmt.Println("bech32 encoded address:", tcolor.WithColor(tcolor.Green, addr.EncodeAddress(true)))
 }

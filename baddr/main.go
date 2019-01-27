@@ -15,6 +15,7 @@ var net = map[string]*chaincfg.Params{
 	"mainnet": &chaincfg.MainNetParams,
 	"testnet": &chaincfg.TestNet3Params,
 	"regtest": &chaincfg.RegressionNetParams,
+	"simnet": &chaincfg.SimNetParams,
 }
 
 func main() {

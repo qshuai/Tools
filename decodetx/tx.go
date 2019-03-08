@@ -6,7 +6,7 @@ import (
 	"github.com/btcsuite/btcutil"
 )
 
-func tx(rawtx string) (*btcutil.Tx, error) {
+func Tx(rawtx string) (*btcutil.Tx, error) {
 	bs, err := hex.DecodeString(rawtx)
 	if err != nil {
 		return nil, err

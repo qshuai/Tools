@@ -12,7 +12,7 @@ import (
 func main() {
 	rawtx := flag.String("rawtx", "", "Please input the raw hexadecimal transaction string")
 	flag.Parse()
-	if rawtx == nil {
+	if rawtx == nil || len(*rawtx) == 0 {
 		fmt.Println(tcolor.WithColor(tcolor.Red, "lack of raw hexadecimal transaction string"))
 		return
 	}

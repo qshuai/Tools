@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bcext/gcash/wire"
+	"github.com/btcsuite/btcd/wire"
 	"github.com/qshuai/tcolor"
 )
 
@@ -44,6 +44,14 @@ func main() {
 
 		fmt.Println("previous outpoint:", t.TxIn[*num].PreviousOutPoint.String())
 		fmt.Println("signature:", hex.EncodeToString(t.TxIn[*num].SignatureScript))
+		if t.HasWitness() {
+			fmt.Println("witness:")
+			i := 0
+			for _, witnessItem := range t.TxIn[*num].Witness {
+				i++
+				fmt.Printf("    %d. %s\n", i, hex.EncodeToString(witnessItem))
+			}
+		}
 		fmt.Printf("sequence: %#x\n", t.TxIn[*num].Sequence)
 
 		os.Exit(0)

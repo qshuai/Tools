@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// time to timestamp
-	t, err := time.Parse("2006-01-02 15:04:05", args[1])
+	t, err := time.ParseInLocation("2006-01-02 15:04:05", args[1], time.Local)
 	if err == nil {
 		fmt.Printf("timestamp: %d\n", t.Unix())
 		return

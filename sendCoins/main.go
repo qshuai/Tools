@@ -18,7 +18,7 @@ const (
 
 var params = map[string]*chaincfg.Params{
 	"mainnet": &chaincfg.MainNetParams,
-	"testnet":&chaincfg.TestNet3Params,
+	"testnet": &chaincfg.TestNet3Params,
 	"regtest": &chaincfg.RegressionNetParams,
 }
 
@@ -45,13 +45,13 @@ func main() {
 	}
 
 	conf := rpcclient.ConnConfig{
-		Host:*host,
-		User:*user,
-		Pass:*passwd,
-		HTTPPostMode:true,
-		DisableTLS:true,
+		Host:         *host,
+		User:         *user,
+		Pass:         *passwd,
+		HTTPPostMode: true,
+		DisableTLS:   true,
 	}
-	client,err := rpcclient.New(&conf, nil)
+	client, err := rpcclient.New(&conf, nil)
 	if err != nil {
 		fmt.Print(tcolor.WithColor(tcolor.Red, "rpc client instance initial failed"))
 		os.Exit(1)
@@ -65,10 +65,10 @@ func main() {
 	}
 
 	// convert amount
-	value := decimal.NewFromFloat(*amount).Mul(decimal.New(1e8,0)).IntPart()
+	value := decimal.NewFromFloat(*amount).Mul(decimal.New(1e8, 0)).IntPart()
 	var failed int
 	for i := 0; i < *count; i++ {
-		hash, err := client.SendToAddress(addr,cashutil.Amount(value))
+		hash, err := client.SendToAddress(addr, cashutil.Amount(value))
 		if err != nil {
 			fmt.Println(tcolor.WithColor(tcolor.Red, "send failed"))
 
@@ -86,13 +86,10 @@ func main() {
 }
 
 func getParam(param string) *chaincfg.Params {
-	chain , ok := params[param]
+	chain, ok := params[param]
 	if !ok {
 		return nil
 	}
 
 	return chain
 }
-
-
-

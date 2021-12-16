@@ -1,4 +1,6 @@
 github.com/cch123/elasticsql v1.0.1 h1:B/c40hmj/TxqjLrpry565J+poi0S2b2NjGOUWmyI+2Q=
 github.com/cch123/elasticsql v1.0.1/go.mod h1:x1Ew690FkNjGn9Fm0asmEqZcteTgx+q3CSwlci8SteQ=
+github.com/tidwall/pretty v1.2.0 h1:RWIZEg2iJ8/g6fDDYzMpobmaoGh5OLl4AXtGUGPcqCs=
+github.com/tidwall/pretty v1.2.0/go.mod h1:ITEVvHYasfjBbM0u2Pg8T2nJnzm8xPwvNhhsoaGGjNU=
 github.com/xwb1989/sqlparser v0.0.0-20171128062118-da747e0c62c4 h1:w96oitIHwAbUymu2zUSla/82gOKNzpJYkFdwCHE/UOA=
 github.com/xwb1989/sqlparser v0.0.0-20171128062118-da747e0c62c4/go.mod h1:hzfGeIUDq/j97IG+FhNqkowIyEcD88LrW6fyU3K3WqY=

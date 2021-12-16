@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"unsafe"
 
 	"github.com/cch123/elasticsql"
+	"github.com/tidwall/pretty"
 )
 
 func main() {
@@ -17,11 +19,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	dsl, esType, err := elasticsql.Convert(sql)
+	dsl, _, err := elasticsql.Convert(*sql)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(esType)
-	fmt.Println(dsl)
+	bs := *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{dsl, len(dsl)}))
+
+	bs = pretty.Pretty(bs)
+	bs = pretty.Color(bs, pretty.TerminalStyle)
+	fmt.Println(*(*string)(unsafe.Pointer(&bs)))
 }
